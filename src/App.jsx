@@ -50,7 +50,7 @@ productData = productData.sort((a,b) => a.price - b.price) // Low to High
   return (
     <>
       <div className=''>
-        <h1 className='text-2xl font-bold text-sky-400 text-center my-6'>All Products :{productData.length}</h1>
+        <h1 className='text-2xl font-bold text-red-400 text-center my-6'>All Products :{productData.length}</h1>
 
         <div className='flex flex-col md:flex-row justify-center items-center gap-6'>
           {/* filter data here..... */}
