@@ -11,6 +11,8 @@ function App() {
   const [products, setProducts] = useState([]);
   const [filterValue, setFilterValue] = useState('All');
   const [searchValue, setSearchValue] = useState('');
+  const [sortValue, setSortValue] = useState('');
+  console.log(sortValue);
 
 
   useEffect(() => {
@@ -27,10 +29,21 @@ function App() {
   // search product
   const searchData = products.filter(p => p.name.toLowerCase().includes(searchValue.toLowerCase()) || p.category.toLowerCase().includes(searchValue.toLowerCase()) || p.brand.toLowerCase().includes(searchValue.toLowerCase())) // সার্চ ভ্যালু lowercase করে ফিল্টার করা হচ্ছে 
 
+
+
+
   // conditionaly data show in display
   let productData = searchValue ? searchData : filterValue !== 'All' ? filterData : products;
 
- 
+// sort by product
+if(sortValue === 'dse'){
+productData = productData.sort((a,b) => b.price - a.price) // High to Low
+}
+else if(sortValue === 'asc'){
+productData = productData.sort((a,b) => a.price - b.price) // Low to High
+}
+
+
   // let productData = filterData;  // only filter data <--------
   // let productData = searchData;  // only search data <--------
 
@@ -63,7 +76,18 @@ function App() {
           <div className='flex justify-center'>
             <input
               onChange={(e) => setSearchValue(e.target.value)}
-              className='border p-4 focus:border-sky-400 ' type="text" placeholder='Search...' />
+              className='border p-4 rounded-md ' type="text" placeholder='Search...' />
+          </div>
+
+          {/* sort by price data here.... */}
+          <div className='flex justify-center'>
+            <select
+              onChange={(e) => setSortValue(e.target.value)}
+              className='border p-4 rounded-md'>
+              <option disabled value=''>Sort By Price</option>
+              <option value='dsc'>High to Low</option>
+              <option value='asc'>Low to High</option>
+            </select>
           </div>
         </div>
 
