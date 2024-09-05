@@ -8,56 +8,76 @@ import ProductCrud from './components/ProductCrud';
 
 
 function App() {
-const [products, setProducts] = useState([]);
-const [filterValue, setFilterValue] = useState('All');
+  const [products, setProducts] = useState([]);
+  const [filterValue, setFilterValue] = useState('All');
+  const [searchValue, setSearchValue] = useState('');
 
 
+  useEffect(() => {
+    const url = "https://job-task-server-2-self.vercel.app/api/products";
+    fetch(url)
+      .then(res => res.json())
+      .then(data => setProducts(data))
+  }, [])
 
-useEffect(()=>{
-  const url = "https://job-task-server-2-self.vercel.app/api/products";
-  fetch(url)
-  .then(res=> res.json())
-  .then(data=>setProducts(data))
-},[])
 
+  // filter product
+  const filterData = products.filter(p => filterValue === 'All' ? products : p.category === filterValue)
 
-// filter product
-const filterData = products.filter(p =>filterValue === 'All'? products : p.category === filterValue)
+  // search product
+  const searchData = products.filter(p => p.name.toLowerCase().includes(searchValue.toLowerCase()) || p.category.toLowerCase().includes(searchValue.toLowerCase()) || p.brand.toLowerCase().includes(searchValue.toLowerCase())) // সার্চ ভ্যালু lowercase করে ফিল্টার করা হচ্ছে 
+
+  // conditionaly data show in display
+  let productData = searchValue ? searchData : filterValue !== 'All' ? filterData : products;
+
+ 
+  // let productData = filterData;  // only filter data <--------
+  // let productData = searchData;  // only search data <--------
 
   return (
     <>
-     <div>
-      <h1 className='text-2xl font-bold text-red-400 text-center my-6'>All Products :{filterData.length}</h1>
-      <div className=' flex justify-center'>
-      <select
-         onChange={(e)=>setFilterValue(e.target.value)}
-          className="border p-4 rounded-md text-center" >
-         
-          <option value="All">All</option>
-          <option value="Jewelry">Jewelry</option>
-          <option value="Furniture">Furniture</option>
-          <option value="Electronics">Electronics</option>
-          <option value="HomeGoods">HomeGoods</option>
-          <option value="Outdoor">Outdoor</option>
-          <option value="Clothing">Clothing</option>
-          <option value="Beauty">Beauty</option>
-          <option value="Toys">Toys</option>
-          <option value="Books">Books</option>
-        </select>
+      <div>
+        <h1 className='text-2xl font-bold text-red-400 text-center my-6'>All Products :{productData.length}</h1>
+
+        <div className='flex justify-center items-center gap-6'>
+          {/* filter data here..... */}
+          <div className=' flex justify-center'>
+            <select
+              onChange={(e) => setFilterValue(e.target.value)}
+              className="border p-4 rounded-md text-center" >
+
+              <option value="All">All</option>
+              <option value="Jewelry">Jewelry</option>
+              <option value="Furniture">Furniture</option>
+              <option value="Electronics">Electronics</option>
+              <option value="HomeGoods">HomeGoods</option>
+              <option value="Outdoor">Outdoor</option>
+              <option value="Clothing">Clothing</option>
+              <option value="Beauty">Beauty</option>
+              <option value="Toys">Toys</option>
+              <option value="Books">Books</option>
+            </select>
+          </div>
+
+          {/* search data here... */}
+          <div className='flex justify-center'>
+            <input
+              onChange={(e) => setSearchValue(e.target.value)}
+              className='border p-4 focus:border-sky-400 ' type="text" placeholder='Search...' />
+          </div>
+        </div>
+
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6 md:px-24">
+          {
+            productData.map((singleProduct, idx) => {
+              return (
+                <ProductCrud key={idx} singleProduct={singleProduct} />
+              )
+            })
+          }
+        </div>
       </div>
-
-
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6 md:px-24">
-        {
-          filterData.map((singleProduct,idx)=>{
-            return(
-              <ProductCrud key={idx} singleProduct={singleProduct}/>
-            )
-          })
-        }
-      </div>
-     </div>
     </>
   )
 }
